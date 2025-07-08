@@ -45,7 +45,6 @@ const Card = () => {
 
   return (
     <>
-      <h1 className="font-bold text-center mt-4">Your Card </h1>
       <div className="flex flex-wrap gap-8 justify-center shadow-sm">
         {cards}
       </div>

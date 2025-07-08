@@ -14,7 +14,7 @@ const Navbar = ({ location, dropdown, setDropdown, getLocation }) => {
   };
   return (
     <>
-      <div className="bg-white py-4 px-6 text-black flex justify-between items-center shadow-2xl">
+      <div className="sticky w-full top-0 left-0 z-50 bg-white py-4 px-6 text-black flex justify-between items-center shadow-2xl">
         {/* Logo Section */}
         <div className="flex gap-6 items-center">
           <Link to={"/"}>
@@ -25,7 +25,7 @@ const Navbar = ({ location, dropdown, setDropdown, getLocation }) => {
         </div>
 
         {/* Navigation Links */}
-        <div className="flex gap-8">
+        <div className="flex gap-8 font-semibold">
           <NavLink
             to="/"
             exact
@@ -83,7 +83,7 @@ const Navbar = ({ location, dropdown, setDropdown, getLocation }) => {
             />
 
             {dropdown ? (
-              <div className="w-[250px] h-max shadow-2xl bg-white absolute top-20 end-44 border-2 p-5 border-gray-100 rounded-md">
+              <div className="w-[250px] h-max shadow-2xl z-50 bg-white absolute top-20 end-44 border-2 p-5 border-gray-100 rounded-md">
                 <h1 className="font-semibold mb-4 text-xl flex justify-between">
                   Change Location{" "}
                   <span onClick={toggleDropdown}>
