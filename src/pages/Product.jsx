@@ -62,7 +62,7 @@ const Product = () => {
           filters={filters}
           setFilters={setFilters}
           products={products}
-        />
+        /> 
 
         {/* Product List */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 flex-1">
