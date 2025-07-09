@@ -1,10 +1,13 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { remove } from "../store/StoreSlice";
+import empty from "../assets/empty.png";
+import { useNavigate } from "react-router";
 
 const Card = () => {
   const product = useSelector((state) => state.card);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const removeToCard = (id) => {
     dispatch(remove(id));
@@ -45,9 +48,24 @@ const Card = () => {
 
   return (
     <>
-      <div className="flex flex-wrap gap-8 justify-center shadow-sm">
-        {cards}
-      </div>
+      {cards.length === 0 ? (
+        <div className="flex flex-col gap-3 justify-center items-center h-[450px] mt-10">
+          <h3 className="text-red-500/80 font-bold text-3xl text-muted">
+            Your cart is empty
+          </h3>
+          <img src={empty} alt="" className="w-[350px]" />
+          <button
+            onClick={() => navigate("/products")}
+            className="bg-red-500 text-white px-3 py-2 rounded-md cursor-pointer"
+          >
+            Continue Shopping
+          </button>
+        </div>
+      ) : (
+        <div className="flex flex-wrap gap-8 justify-center shadow-sm">
+          {cards}
+        </div>
+      )}
     </>
   );
 };

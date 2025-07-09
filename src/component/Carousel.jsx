@@ -12,8 +12,8 @@ const Carousels = () => {
 
   const getImage = async () => {
     try {
-      const res = await productApi;
-      console.log(res.data.products);
+      const res = await productApi.get();
+      // console.log(res.data.products);
       setImages(res.data.products);
     } catch (err) {
       console.log("Error", err);
@@ -51,7 +51,7 @@ const Carousels = () => {
                 <div>
                   <img
                     src={item.image}
-                    alt={item.title}
+                    alt={item.model}
                     className="rounded-full h-[400px] hover:scale-105 transition-all"
                   />
                 </div>
