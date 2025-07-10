@@ -11,25 +11,34 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import SingleProduct from "./pages/SingleProduct";
 import LoginForm from "./auth/LoginForm";
+import Footer from "./component/Footer";
+import { useLocation } from "react-router-dom";
 
 function App() {
-  const [location, setLocation] = useState([]);
+  const [location, setLocation] = useState(null);
   const [dropdown, setDropdown] = useState(false);
-  // const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const locationPath = useLocation();
+  const hideLayoutPaths = ["/login"];
+  const shouldHideLayout = hideLayoutPaths.includes(locationPath.pathname);
 
   const getLocation = async () => {
-    navigator.geolocation.getCurrentPosition(async (pos) => {
-      const { latitude, longitude } = pos.coords;
+    if (!navigator.geolocation) {
+      alert("Geolocation is not supported by your browser");
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(async (position) => {
+      const { latitude, longitude } = position.coords;
       const url = `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`;
 
       try {
         const location = await axios.get(url);
-        const exactLocation = location.data.address;
-        setLocation(exactLocation);
-        // console.log(exactLocation);
+        const address = location.data.address;
+        console.log(address);
+        setLocation(address);
         setDropdown(false);
       } catch (error) {
-        console.log("Error", error);
+        console.log("Error fetching location", error);
       }
     });
   };
@@ -40,27 +49,30 @@ function App() {
 
   return (
     <>
-      <Navbar
-        location={location}
-        dropdown={dropdown}
-        setDropdown={setDropdown}
-        getLocation={getLocation}
-      />
+      {!shouldHideLayout && (
+        <Navbar
+          location={location}
+          dropdown={dropdown}
+          setDropdown={setDropdown}
+          getLocation={getLocation}
+        />
+      )}
 
       <Routes>
-        <Route path="/login" element={<LoginForm />}></Route>
-
-        <Route path="/" element={<Home />}></Route>
-        <Route path="/about" element={<About />}></Route>
-        <Route path="/products" element={<Product />}></Route>
-        <Route path="/products/:id" element={<SingleProduct />}></Route>
-        <Route path="/contact" element={<Contact />}></Route>
+        <Route path="/login" element={<LoginForm />} />
+        <Route path="/" element={<Home />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/products" element={<Product />} />
+        <Route path="/products/:id" element={<SingleProduct />} />
+        <Route path="/contact" element={<Contact />} />
         <Route
           path="/card"
           element={<Card location={location} getLocation={getLocation} />}
-        ></Route>
-        <Route path="/*" element={<Error />}></Route>
+        />
+        <Route path="/*" element={<Error />} />
       </Routes>
+
+      {!shouldHideLayout && <Footer />}
     </>
   );
 }

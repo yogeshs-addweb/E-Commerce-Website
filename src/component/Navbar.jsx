@@ -5,9 +5,8 @@ import { FaLocationDot } from "react-icons/fa6";
 import { FaSortDown } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
 import { useSelector } from "react-redux";
-import axios from "axios";
 import { toast } from "react-toastify";
-const userApi = import.meta.env.VITE_USER_API_KEY;
+import { userApi } from "../api/AxiosInstance";
 
 const Navbar = ({ location, dropdown, setDropdown, getLocation }) => {
   const product = useSelector((state) => state.card);
@@ -18,8 +17,8 @@ const Navbar = ({ location, dropdown, setDropdown, getLocation }) => {
   useEffect(() => {
     const token = JSON.parse(localStorage.getItem("token"));
     if (token) {
-      axios
-        .get(userApi, {
+      userApi
+        .get("/profile", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -100,11 +99,13 @@ const Navbar = ({ location, dropdown, setDropdown, getLocation }) => {
             <span className="text-black ">
               {location ? (
                 <div className="-space-y-2">
-                  <p>{location.village}</p>
+                  <p>{location.state_district}</p>
                   <p>{location.state}</p>
                 </div>
               ) : (
-                "Detect Location"
+                <span className="text-gray-400 text-sm italic">
+                  Detect Location
+                </span>
               )}
             </span>
             <FaSortDown

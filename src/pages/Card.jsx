@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { remove } from "../store/StoreSlice";
+import { remove, updateQuantity } from "../store/StoreSlice";
 import empty from "../assets/empty.png";
 import { useNavigate } from "react-router";
 import { FaRegTrashAlt } from "react-icons/fa";
@@ -13,24 +13,26 @@ const Card = ({ location, getLocation }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const [quantity, setQuantity] = useState(1);
-
-  const handleIncrease = () => {
-    setQuantity((prev) => prev + 1);
+  const handleIncrease = (item) => {
+    dispatch(updateQuantity({ id: item.id, quantity: item.quantity + 1 }));
   };
 
-  const handleDecrease = () => {
-    if (quantity > 1) {
-      setQuantity((prev) => prev - 1);
+  const handleDecrease = (item) => {
+    if (item.quantity > 1) {
+      dispatch(updateQuantity({ id: item.id, quantity: item.quantity - 1 }));
     }
   };
 
   const removeToCard = (id) => {
     dispatch(remove(id));
-    toast.error("Product remove success !");
+    toast.error("Product removed!");
   };
 
-  const totalPrice = product.reduce((total, item) => total + item.price, 0);
+  const totalPrice = product.reduce(
+    (total, item) => total + item.price * item.quantity,
+    0
+  );
+
   return (
     <>
       <div className="mt-10 max-w-6xl mx-auto mb-5 px-4 md:px-0">
@@ -56,7 +58,7 @@ const Card = ({ location, getLocation }) => {
                             {item.title}
                           </h1>
                           <p className="text-red-500 font-semibold text-lg">
-                            ${item.price}
+                            ${item.price * item.quantity}
                           </p>
                         </div>
                       </div>
@@ -64,14 +66,14 @@ const Card = ({ location, getLocation }) => {
                       {/* Quantity button  */}
                       <div className="bg-red-500 text-white flex gap-4 p-2 px-4 rounded-md font-bold text-xl">
                         <button
-                          onClick={() => handleDecrease()}
+                          onClick={() => handleDecrease(item)}
                           className="cursor-pointer"
                         >
                           -
                         </button>
-                        <span>{quantity}</span>
+                        <span>{item.quantity}</span>
                         <button
-                          onClick={() => handleIncrease()}
+                          onClick={() => handleIncrease(item)}
                           className="cursor-pointer"
                         >
                           +
@@ -98,11 +100,11 @@ const Card = ({ location, getLocation }) => {
             </div>
           </div>
         ) : (
-          <div className="flex flex-col gap-3 justify-center items-center h-[400px] ">
+          <div className="flex flex-col gap-3 justify-center items-center h-[400px] mb-20 ">
             <h1 className="text-red-500/80 font-bold text-3xl text-muted mt-12">
               Your cart is empty
             </h1>
-            <img src={empty} alt="" className="w-[400px]" />
+            <img src={empty} alt="" className="w-[300px]" />
             <button
               onClick={() => navigate("/products")}
               className="bg-red-500 text-white px-3 py-2 rounded-md cursor-pointer "
