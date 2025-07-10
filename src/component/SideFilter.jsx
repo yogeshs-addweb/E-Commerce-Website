@@ -75,7 +75,7 @@ const SideFilter = ({ filters, setFilters, products }) => {
         onClick={() =>
           setFilters({ category: "", company: "", color: "", price: 1000 })
         }
-        className="w-full mt-6 text-sm text-white bg-red-500 hover:bg-red-600 px-4 py-2 rounded"
+        className="w-full mt-6 text-sm text-white bg-black hover:bg-red-500 transition px-4 py-2 rounded"
       >
         Clear Filters
       </button>

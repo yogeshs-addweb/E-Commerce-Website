@@ -4,8 +4,7 @@ import { useDispatch } from "react-redux";
 import { useParams } from "react-router";
 import { add } from "../store/StoreSlice";
 import Loading from "../assets/loader.webm";
-const singleApi = import.meta.env.VITE_SINGLE_API;
-// import { singleApi } from "../api/AxiosInstance";
+import { singleProductApi } from "../api/AxiosInstance";
 
 const SingleProduct = () => {
   const [SingleProduct, setSingleProduct] = useState(null);
@@ -18,9 +17,10 @@ const SingleProduct = () => {
 
   const getSingleProduct = async () => {
     try {
-      const res = await axios.get(`${singleApi}${params.id}`);
+      const res = await singleProductApi.get(`${params.id}`);
       const product = res.data.product;
       setSingleProduct(product);
+      console.log(product);
     } catch (err) {
       console.log("Error", err);
     }
@@ -38,11 +38,11 @@ const SingleProduct = () => {
         <div className="px-4 pb-4 md:px-0">
           <div className="max-w-6xl mx-auto md:p-6 grid grid-cols-1 md:grid-cols-2 gap-10">
             {/* Product Image */}
-            <div className="w-full flex justify-center">
+            <div className=" flex justify-center shadow-lg">
               <img
                 src={SingleProduct.image}
                 alt={SingleProduct.title}
-                className="rounded-2xl w-full max-w-[500px] object-cover shadow-lg"
+                className="rounded-2xl  object-cover h-[600px]"
               />
             </div>
 
@@ -94,7 +94,7 @@ const SingleProduct = () => {
               {/* Add to Cart Button */}
               <div className="flex gap-4 mt-6">
                 <button
-                  className="w-full bg-black text-white py-3 rounded-md text-sm font-semibold hover:bg-gray-800 transition duration-300"
+                  className="w-full bg-black hover:bg-red-500 text-white py-3 rounded-md text-sm font-semibold  transition duration-300"
                   onClick={() => addToCart(SingleProduct)}
                 >
                   Add To Cart

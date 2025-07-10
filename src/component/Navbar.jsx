@@ -1,17 +1,50 @@
-import React, { useState } from "react";
-import { Link, NavLink } from "react-router";
+import React, { useEffect, useState } from "react";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import { FiShoppingCart } from "react-icons/fi";
 import { FaLocationDot } from "react-icons/fa6";
 import { FaSortDown } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
 import { useSelector } from "react-redux";
+import axios from "axios";
+import { toast } from "react-toastify";
+const userApi = import.meta.env.VITE_USER_API_KEY;
 
 const Navbar = ({ location, dropdown, setDropdown, getLocation }) => {
   const product = useSelector((state) => state.card);
+  const [user, setUser] = useState(null);
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = JSON.parse(localStorage.getItem("token"));
+    if (token) {
+      axios
+        .get(userApi, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then((res) => {
+          setUser(res.data);
+          // console.log("User Data:", res.data);
+        })
+        .catch((err) => {
+          console.log("Error fetching user", err);
+        });
+    }
+  }, []);
+
+  // Logout functionality
+  const removeData = () => {
+    localStorage.removeItem("token");
+    setUser(null);
+    toast.success("Logout Success!");
+  };
 
   const toggleDropdown = () => {
     setDropdown(!dropdown);
   };
+
   return (
     <>
       <div className="sticky w-full top-0 left-0 z-50 bg-white py-4 px-6 text-black flex justify-between items-center shadow-2xl">
@@ -19,7 +52,7 @@ const Navbar = ({ location, dropdown, setDropdown, getLocation }) => {
         <div className="flex gap-6 items-center">
           <Link to={"/"}>
             <h1 className="font-bold text-3xl">
-              <span className="text-red-500 font-serif">S</span>tore
+              <span className="text-red-500 font-serif font-bold">S</span>tore
             </h1>
           </Link>
         </div>
@@ -28,7 +61,6 @@ const Navbar = ({ location, dropdown, setDropdown, getLocation }) => {
         <div className="flex gap-8 font-semibold">
           <NavLink
             to="/"
-            exact
             className={({ isActive }) =>
               `${isActive ? "border-b-4 border-red-500" : "text-black"}`
             }
@@ -61,7 +93,7 @@ const Navbar = ({ location, dropdown, setDropdown, getLocation }) => {
           </NavLink>
         </div>
 
-        {/* location detect  */}
+        {/* Location Detection */}
         <div className="flex gap-10 items-center">
           <div className="flex items-center gap-2">
             <FaLocationDot className="text-red-500" />
@@ -82,7 +114,7 @@ const Navbar = ({ location, dropdown, setDropdown, getLocation }) => {
               aria-expanded={dropdown ? "true" : "false"}
             />
 
-            {dropdown ? (
+            {dropdown && (
               <div className="w-[250px] h-max shadow-2xl z-50 bg-white absolute top-20 end-44 border-2 p-5 border-gray-100 rounded-md">
                 <h1 className="font-semibold mb-4 text-xl flex justify-between">
                   Change Location{" "}
@@ -97,26 +129,44 @@ const Navbar = ({ location, dropdown, setDropdown, getLocation }) => {
                   Detect my location
                 </button>
               </div>
-            ) : null}
+            )}
           </div>
 
+          {/* Shopping Cart */}
           <Link to="/card">
             <span className="relative">
               <FiShoppingCart size={28} />
-
-              <span className="absolute  bottom-3 left-4 bg-red-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+              <span className="absolute bottom-3 left-4 bg-red-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
                 {product.length}
               </span>
             </span>
           </Link>
 
-          {/* Login Button */}
-          <button className="bg-black text-white font-semibold py-1 px-4 rounded">
-            Login
-          </button>
+          {/* Conditional Login/Logout Button */}
+          <div className="flex items-center gap-4">
+            {user ? (
+              <>
+                <p className="text-sm font-bold">{user.email}</p>
+                <button
+                  onClick={removeData}
+                  className="bg-red-500 hover:bg-red-500 text-white font-semibold py-1 px-4 rounded"
+                >
+                  Logout
+                </button>
+              </>
+            ) : (
+              <button
+                onClick={() => navigate("/login")}
+                className="bg-black hover:bg-red-500 text-white font-semibold py-1 px-4 rounded"
+              >
+                Login
+              </button>
+            )}
+          </div>
         </div>
       </div>
     </>
   );
 };
+
 export default Navbar;

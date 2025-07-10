@@ -7,7 +7,7 @@ export const StoreSlice = createSlice({
   initialState,
   reducers: {
     add(state, action) {
-      const itemExisted = state.some((item) => item.id === action.payload.id);
+      const itemExisted = state.find((item) => item.id === action.payload.id);
       if (!itemExisted) {
         state.push(action.payload);
       }

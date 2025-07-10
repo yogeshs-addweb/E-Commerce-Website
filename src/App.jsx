@@ -10,10 +10,12 @@ import Card from "./pages/Card";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import SingleProduct from "./pages/SingleProduct";
+import LoginForm from "./auth/LoginForm";
 
 function App() {
   const [location, setLocation] = useState([]);
   const [dropdown, setDropdown] = useState(false);
+  // const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const getLocation = async () => {
     navigator.geolocation.getCurrentPosition(async (pos) => {
@@ -24,6 +26,7 @@ function App() {
         const location = await axios.get(url);
         const exactLocation = location.data.address;
         setLocation(exactLocation);
+        // console.log(exactLocation);
         setDropdown(false);
       } catch (error) {
         console.log("Error", error);
@@ -43,13 +46,19 @@ function App() {
         setDropdown={setDropdown}
         getLocation={getLocation}
       />
+
       <Routes>
+        <Route path="/login" element={<LoginForm />}></Route>
+
         <Route path="/" element={<Home />}></Route>
         <Route path="/about" element={<About />}></Route>
         <Route path="/products" element={<Product />}></Route>
         <Route path="/products/:id" element={<SingleProduct />}></Route>
         <Route path="/contact" element={<Contact />}></Route>
-        <Route path="/card" element={<Card />}></Route>
+        <Route
+          path="/card"
+          element={<Card location={location} getLocation={getLocation} />}
+        ></Route>
         <Route path="/*" element={<Error />}></Route>
       </Routes>
     </>

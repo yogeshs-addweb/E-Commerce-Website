@@ -5,6 +5,7 @@ import { useNavigate } from "react-router";
 import SideFilter from "../component/SideFilter";
 import { productApi } from "../api/AxiosInstance";
 import empty from "../assets/empty.png";
+import { toast } from "react-toastify";
 
 const Product = () => {
   const dispatch = useDispatch();
@@ -25,6 +26,7 @@ const Product = () => {
       try {
         const res = await productApi.get();
         setProducts(res.data.products);
+        console.log(res.data.products);
       } catch (err) {
         console.log("Error", err);
       }
@@ -52,6 +54,7 @@ const Product = () => {
 
   const addToCart = (item) => {
     dispatch(add(item));
+    toast.success("Product add success !");
   };
 
   return (
@@ -62,7 +65,7 @@ const Product = () => {
           filters={filters}
           setFilters={setFilters}
           products={products}
-        /> 
+        />
 
         {/* Product List */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 flex-1">
@@ -90,7 +93,7 @@ const Product = () => {
               </div>
               <div className="px-4 pb-4">
                 <button
-                  className="w-full bg-black text-white py-2 rounded-md text-sm hover:bg-gray-800 transition"
+                  className="w-full bg-black text-white py-2 rounded-md text-sm hover:bg-red-500 transition"
                   onClick={() => addToCart(item)}
                 >
                   Add To Cart

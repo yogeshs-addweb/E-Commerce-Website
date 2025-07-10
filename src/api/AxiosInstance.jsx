@@ -1,8 +1,8 @@
 import axios from "axios";
-const PRODUCT_API = import.meta.env.VITE_PRODUCT_API_BASE_URL;
-// const SINGLE_API = import.meta.env.VITE_SINGLE_API;
 
 const createAxiosInstance = (baseURL) => {
+  // console.log("base url is ", baseURL);
+
   const instance = axios.create({
     baseURL,
     timeout: 600000,
@@ -37,5 +37,12 @@ const createAxiosInstance = (baseURL) => {
   return instance;
 };
 
+const PRODUCT_API = import.meta.env.VITE_PRODUCT_API;
+const SINGLE_PRODUCT_API = import.meta.env.VITE_SINGLE_PRODUCT_API;
+const VITE_LOGIN_API = import.meta.env.VITE_LOGIN_API_KEY;
+// const VITE_USER_API = import.meta.env.VITE_USER_API_KEY;
+
 export const productApi = createAxiosInstance(PRODUCT_API);
-// export const singleApi = createAxiosInstance(SINGLE_API);
+export const singleProductApi = createAxiosInstance(SINGLE_PRODUCT_API);
+export const loginApi = createAxiosInstance(VITE_LOGIN_API);
+// export const userApi = createAxiosInstance(VITE_USER_API);
