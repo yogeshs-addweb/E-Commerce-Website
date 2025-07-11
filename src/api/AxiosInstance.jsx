@@ -39,10 +39,10 @@ const createAxiosInstance = (baseURL) => {
 
 const PRODUCT_API = import.meta.env.VITE_PRODUCT_API;
 const SINGLE_PRODUCT_API = import.meta.env.VITE_SINGLE_PRODUCT_API;
-const VITE_LOGIN_API = import.meta.env.VITE_LOGIN_API_KEY;
-const VITE_USER_API = import.meta.env.VITE_USER_API_KEY;
+const LOGIN_API = import.meta.env.VITE_LOGIN_API_KEY;
+const USER_API = import.meta.env.VITE_USER_API_KEY;
 
 export const productApi = createAxiosInstance(PRODUCT_API);
 export const singleProductApi = createAxiosInstance(SINGLE_PRODUCT_API);
-export const loginApi = createAxiosInstance(VITE_LOGIN_API);
-export const userApi = createAxiosInstance(VITE_USER_API);
+export const loginApi = createAxiosInstance(LOGIN_API);
+export const userApi = createAxiosInstance(USER_API);

@@ -13,6 +13,9 @@ import SingleProduct from "./pages/SingleProduct";
 import LoginForm from "./auth/LoginForm";
 import Footer from "./component/Footer";
 import { useLocation } from "react-router-dom";
+import AOS from "aos";
+import "aos/dist/aos.css";
+// import ProtectRoute from "./ProtectedRoute/ProtectRoute";
 
 function App() {
   const [location, setLocation] = useState(null);
@@ -34,7 +37,7 @@ function App() {
       try {
         const location = await axios.get(url);
         const address = location.data.address;
-        console.log(address);
+        // console.log(address);
         setLocation(address);
         setDropdown(false);
       } catch (error) {
@@ -45,6 +48,15 @@ function App() {
 
   useEffect(() => {
     getLocation();
+  }, []);
+
+  useEffect(() => {
+    AOS.init({
+      // Optional: Global settings for AOS
+      duration: 1000, // Animation duration in milliseconds
+      once: true, // Whether animation should happen only once
+      // ...other options
+    });
   }, []);
 
   return (
@@ -65,10 +77,21 @@ function App() {
         <Route path="/products" element={<Product />} />
         <Route path="/products/:id" element={<SingleProduct />} />
         <Route path="/contact" element={<Contact />} />
+
         <Route
           path="/card"
-          element={<Card location={location} getLocation={getLocation} />}
+          element={
+            <Card
+              location={location}
+              setLocation={setLocation}
+              getLocation={getLocation}
+            />
+          }
         />
+        {/* <Route element={<ProtectRoute />}>
+         
+        </Route> */}
+
         <Route path="/*" element={<Error />} />
       </Routes>
 

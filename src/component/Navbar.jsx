@@ -4,6 +4,7 @@ import { FiShoppingCart } from "react-icons/fi";
 import { FaLocationDot } from "react-icons/fa6";
 import { FaSortDown } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
+import { HiMenu } from "react-icons/hi";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { userApi } from "../api/AxiosInstance";
@@ -11,6 +12,7 @@ import { userApi } from "../api/AxiosInstance";
 const Navbar = ({ location, dropdown, setDropdown, getLocation }) => {
   const product = useSelector((state) => state.card);
   const [user, setUser] = useState(null);
+  const [mobileMenu, setMobileMenu] = useState(false);
 
   const navigate = useNavigate();
 
@@ -25,7 +27,6 @@ const Navbar = ({ location, dropdown, setDropdown, getLocation }) => {
         })
         .then((res) => {
           setUser(res.data);
-          // console.log("User Data:", res.data);
         })
         .catch((err) => {
           console.log("Error fetching user", err);
@@ -33,7 +34,6 @@ const Navbar = ({ location, dropdown, setDropdown, getLocation }) => {
     }
   }, []);
 
-  // Logout functionality
   const removeData = () => {
     localStorage.removeItem("token");
     setUser(null);
@@ -45,87 +45,70 @@ const Navbar = ({ location, dropdown, setDropdown, getLocation }) => {
   };
 
   return (
-    <>
-      <div className="sticky w-full top-0 left-0 z-50 bg-white py-4 px-6 text-black flex justify-between items-center shadow-2xl">
-        {/* Logo Section */}
-        <div className="flex gap-6 items-center">
-          <Link to={"/"}>
+    <header className="sticky top-0 z-50 w-full bg-white shadow-2xl">
+      <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
+        {/* Logo */}
+        <div className="flex items-center gap-4">
+          <Link to="/">
             <h1 className="font-bold text-3xl">
-              <span className="text-red-500 font-serif font-bold">S</span>tore
+              <span className="text-red-500 font-serif">S</span>tore
             </h1>
           </Link>
         </div>
 
-        {/* Navigation Links */}
-        <div className="flex gap-8 font-semibold">
-          <NavLink
-            to="/"
-            className={({ isActive }) =>
-              `${isActive ? "border-b-4 border-red-500" : "text-black"}`
-            }
-          >
-            Home
-          </NavLink>
-          <NavLink
-            to="/products"
-            className={({ isActive }) =>
-              `${isActive ? "border-b-4 border-red-500" : "text-black"}`
-            }
-          >
-            Products
-          </NavLink>
-          <NavLink
-            to="/about"
-            className={({ isActive }) =>
-              `${isActive ? "border-b-4 border-red-500" : "text-black"}`
-            }
-          >
-            About
-          </NavLink>
-          <NavLink
-            to="/contact"
-            className={({ isActive }) =>
-              `${isActive ? "border-b-4 border-red-500" : "text-black"}`
-            }
-          >
-            Contact
-          </NavLink>
-        </div>
+        {/* Desktop Nav Links */}
+        <nav className="hidden lg:flex gap-8 font-semibold">
+          {["/", "/products", "/about", "/contact"].map((path, idx) => {
+            const labels = ["Home", "Products", "About", "Contact"];
+            return (
+              <NavLink
+                key={path}
+                to={path}
+                className={({ isActive }) =>
+                  `${
+                    isActive ? "border-b-4 border-red-500" : "text-black"
+                  } hover:text-red-500 transition duration-200`
+                }
+              >
+                {labels[idx]}
+              </NavLink>
+            );
+          })}
+        </nav>
 
-        {/* Location Detection */}
-        <div className="flex gap-10 items-center">
-          <div className="flex items-center gap-2">
+        {/* Right Controls */}
+        <div className="flex items-center gap-6">
+          {/* Location */}
+          <div className="relative hidden md:flex items-center gap-2 text-sm">
             <FaLocationDot className="text-red-500" />
-            <span className="text-black ">
+            <div>
               {location ? (
                 <div className="-space-y-2">
                   <p>{location.state_district}</p>
                   <p>{location.state}</p>
                 </div>
               ) : (
-                <span className="text-gray-400 text-sm italic">
-                  Detect Location
-                </span>
+                <span className="text-gray-400 italic">Detect Location</span>
               )}
-            </span>
+            </div>
             <FaSortDown
               onClick={toggleDropdown}
               className="cursor-pointer"
               aria-label="Toggle location dropdown"
               aria-expanded={dropdown ? "true" : "false"}
             />
-
             {dropdown && (
-              <div className="w-[250px] h-max shadow-2xl z-50 bg-white absolute top-20 end-44 border-2 p-5 border-gray-100 rounded-md">
-                <h1 className="font-semibold mb-4 text-xl flex justify-between">
-                  Change Location{" "}
-                  <span onClick={toggleDropdown}>
-                    <IoMdClose className="cursor-pointer" />
-                  </span>
-                </h1>
+              <div className="absolute top-14 right-0 w-64 bg-white border p-5 rounded-md shadow-2xl z-50">
+                <div className="flex justify-between items-center mb-3">
+                  <h1 className="font-semibold text-lg">Change Location</h1>
+                  <IoMdClose
+                    onClick={toggleDropdown}
+                    className="cursor-pointer text-gray-600"
+                  />
+                </div>
                 <button
                   onClick={getLocation}
-                  className="bg-red-500 text-white px-3 py-1 rounded-md cursor-pointer"
+                  className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
                 >
                   Detect my location
                 </button>
@@ -133,40 +116,88 @@ const Navbar = ({ location, dropdown, setDropdown, getLocation }) => {
             )}
           </div>
 
-          {/* Shopping Cart */}
-          <Link to="/card">
-            <span className="relative">
-              <FiShoppingCart size={28} />
-              <span className="absolute bottom-3 left-4 bg-red-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                {product.length}
-              </span>
+          {/* Cart */}
+          <Link to="/card" className="relative">
+            <FiShoppingCart size={26} />
+            <span className="absolute -top-2 -right-2 bg-red-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+              {product.length}
             </span>
           </Link>
 
-          {/* Conditional Login/Logout Button */}
-          <div className="flex items-center gap-4">
-            {user ? (
-              <>
-                <p className="text-sm font-bold">{user.email}</p>
-                <button
-                  onClick={removeData}
-                  className="bg-red-500 hover:bg-red-500 text-white font-semibold py-1 px-4 rounded"
-                >
-                  Logout
-                </button>
-              </>
-            ) : (
+          {/* Auth Button */}
+          {user ? (
+            <div className="hidden md:flex items-center gap-2">
+              <p className="text-sm font-semibold">{user.email}</p>
               <button
-                onClick={() => navigate("/login")}
-                className="bg-black hover:bg-red-500 text-white font-semibold py-1 px-4 rounded"
+                onClick={removeData}
+                className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded"
               >
-                Login
+                Logout
               </button>
-            )}
-          </div>
+            </div>
+          ) : (
+            <button
+              onClick={() => navigate("/login")}
+              className="hidden md:inline-block bg-black hover:bg-red-500 text-white px-4 py-1 rounded"
+            >
+              Login
+            </button>
+          )}
+
+          {/* Hamburger Menu */}
+          <button
+            className="lg:hidden text-2xl"
+            onClick={() => setMobileMenu(!mobileMenu)}
+          >
+            {mobileMenu ? <IoMdClose /> : <HiMenu />}
+          </button>
         </div>
       </div>
-    </>
+
+      {/* Mobile Menu */}
+      {mobileMenu && (
+        <div className="lg:hidden bg-white border-t px-6 pb-4">
+          <nav className="flex flex-col gap-4 py-4">
+            <NavLink to="/" onClick={() => setMobileMenu(false)}>
+              Home
+            </NavLink>
+            <NavLink to="/products" onClick={() => setMobileMenu(false)}>
+              Products
+            </NavLink>
+            <NavLink to="/about" onClick={() => setMobileMenu(false)}>
+              About
+            </NavLink>
+            <NavLink to="/contact" onClick={() => setMobileMenu(false)}>
+              Contact
+            </NavLink>
+          </nav>
+          {user ? (
+            <div className="flex flex-col gap-2 text-sm">
+              <p className="font-semibold">{user.email}</p>
+              <button
+                onClick={() => {
+                  removeData();
+                  setMobileMenu(false);
+                }}
+                className="bg-red-500 text-white py-1 rounded"
+              >
+                Logout
+              </button>
+            </div>
+          ) : (
+            <button
+              onClick={() => {
+                navigate("/login");
+                setMobileMenu(false);
+              }}
+              className="w-full bg-black text-white py-2 rounded"
+            >
+              Login
+            </button>
+          )}
+        </div>
+      )}
+    </header>
   );
 };
 

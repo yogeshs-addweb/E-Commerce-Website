@@ -51,10 +51,14 @@ const Card = ({ location, getLocation }) => {
                         <img
                           src={item.image}
                           alt={item.model}
-                          className="w-20 h-20 rounded-md"
+                          className="w-20 h-20 rounded-md cursor-pointer"
+                          onClick={() => navigate(`/products/${item.id}`)}
                         />
                         <div>
-                          <h1 className="md:w-[300px] line-clamp-2 ">
+                          <h1
+                            onClick={() => navigate(`/products/${item.id}`)}
+                            className="md:w-[300px] line-clamp-2  cursor-pointer hover:text-blue-500"
+                          >
                             {item.title}
                           </h1>
                           <p className="text-red-500 font-semibold text-lg">
